@@ -454,6 +454,7 @@ async function loadUserData(handle, showStatus) {
       setHandleStatus("success", "Loaded " + solvedProblemIds.size + " solved problems");
     }
 
+    submissionsLoading = false;
     updateProblemCount();
     updateRollButton();
     renderHistory();
@@ -463,13 +464,12 @@ async function loadUserData(handle, showStatus) {
       renderContests();
     }
   } catch (e) {
+    submissionsLoading = false;
     console.error("Failed to fetch user submissions:", e);
     if (showStatus) {
       setHandleStatus("error", "Failed: " + e.message);
     }
     dom.excludeSolved.disabled = true;
-  } finally {
-    submissionsLoading = false;
   }
 }
 
@@ -1370,7 +1370,7 @@ dom.excludeSolved.addEventListener("change", function () {
 // Show tags checkbox
 (function () {
   var saved = localStorage.getItem("cf_showTags");
-  var showTags = saved === null ? true : saved === "true";
+  var showTags = saved === null ? false : saved === "true";
   dom.showTags.checked = showTags;
   document.body.classList.toggle("hide-tags", !showTags);
 })();
