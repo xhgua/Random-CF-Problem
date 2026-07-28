@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random Codeforces Problem</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Header -->
+    <header class="header">
+      <h1 class="logo">🎲 Random Codeforces Problem</h1>
+      <button id="refreshCacheBtn" class="btn-icon" title="Refresh problem cache from Codeforces API">🔄 Refresh Cache</button>
+    </header>
+
+    <!-- Cache Status Banner -->
+    <div id="cacheStatus" class="banner banner-info" hidden></div>
+
+    <!-- Error Banner -->
+    <div id="errorBanner" class="banner banner-error" hidden></div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+      <div class="spinner"></div>
+      <p>Loading problems from Codeforces API...</p>
+    </div>
+
+    <!-- Tab Navigation -->
+    <nav class="tab-bar">
+      <button class="tab-btn tab-active" data-tab="picker">🎲 Random Picker</button>
+      <button class="tab-btn" data-tab="stats">📊 User Stats</button>
+      <button class="tab-btn" data-tab="contests">📋 Contests</button>
+    </nav>
+
+    <!-- CF Handle Bar (shared between both tabs) -->
+    <div class="handle-bar">
+      <label class="handle-label" for="cfHandle">CF Handle:</label>
+      <input type="text" id="cfHandle" class="handle-input" placeholder="e.g. tourist" autocomplete="off">
+      <span id="handleStatus" class="handle-status"></span>
+    </div>
+
+    <!-- ==================== Picker Page ==================== -->
+    <div id="pickerPage">
+
+      <!-- Filters Section -->
+      <section class="filters" id="filtersSection">
+        <h2>Filters</h2>
+
+        <!-- Rating Range -->
+        <div class="filter-group">
+          <label class="filter-label">Rating Range</label>
+          <div class="rating-presets">
+            <button class="preset-btn preset-active" data-min="0" data-max="3500">All</button>
+            <button class="preset-btn" data-min="800" data-max="1200">800 – 1200</button>
+            <button class="preset-btn" data-min="1200" data-max="1600">1200 – 1600</button>
+            <button class="preset-btn" data-min="1600" data-max="2000">1600 – 2000</button>
+            <button class="preset-btn" data-min="2000" data-max="2400">2000 – 2400</button>
+            <button class="preset-btn" data-min="2400" data-max="3500">2400+</button>
+          </div>
+          <div class="rating-inputs">
+            <label>
+              Min:
+              <input type="number" id="ratingMin" value="0" min="0" max="3500" step="100">
+            </label>
+            <label>
+              Max:
+              <input type="number" id="ratingMax" value="3500" min="0" max="3500" step="100">
+            </label>
+          </div>
+        </div>
+
+        <!-- Tags -->
+        <div class="filter-group">
+          <label class="filter-label">Tags <span class="label-hint">(OR logic — problem matches if it has any selected tag)</span></label>
+          <input type="text" id="tagSearch" class="tag-search" placeholder="Search tags...">
+          <div id="tagContainer" class="tag-container">
+            <!-- dynamically populated -->
+          </div>
+          <button id="clearTagsBtn" class="btn-text">✕ Clear all tags</button>
+        </div>
+
+        <!-- Exclusions -->
+        <div class="filter-group">
+          <label class="filter-label">Exclusions</label>
+          <div class="checkbox-group">
+            <label class="checkbox-label" id="excludeSolvedLabel">
+              <input type="checkbox" id="excludeSolved" disabled>
+              Exclude solved by <strong id="excludeHandleName">—</strong>
+            </label>
+            <label class="checkbox-label" style="margin-top:4px;">
+              <span style="font-size:0.875rem;color:var(--text-primary);">Only contests ≥</span>
+              <input type="number" id="minContestId" value="0" min="0" step="1" style="width:80px;">
+            </label>
+          </div>
+        </div>
+
+        <!-- Options -->
+        <div class="filter-group">
+          <label class="filter-label">Options</label>
+          <div class="checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="showTags" checked>
+              Show tags
+            </label>
+          </div>
+        </div>
+
+        <!-- Problem Count -->
+        <div class="problem-count" id="problemCount"></div>
+      </section>
+
+      <!-- Roll Button -->
+      <div class="roll-section">
+        <button id="rollBtn" class="btn-roll" disabled>🎲 Roll Random Problem</button>
+      </div>
+
+      <!-- Problem Card -->
+      <section id="problemCardSection" class="card-section" hidden>
+        <div id="problemCard" class="card">
+          <!-- dynamically populated -->
+        </div>
+      </section>
+
+      <!-- History Section -->
+      <section class="history-section" id="historySection">
+        <h2>History</h2>
+        <div id="historyList">
+          <p class="text-muted">No problems rolled yet.</p>
+        </div>
+        <button id="clearHistoryBtn" class="btn-text" hidden>✕ Clear history</button>
+      </section>
+
+    </div><!-- /pickerPage -->
+
+    <!-- ==================== Stats Page ==================== -->
+    <div id="statsPage" hidden>
+      <div id="statsContent">
+        <div class="stats-placeholder">
+          <p>Enter your Codeforces handle above and press <strong>Enter</strong> to load your stats.</p>
+        </div>
+      </div>
+    </div><!-- /statsPage -->
+
+    <!-- ==================== Contests Page ==================== -->
+    <div id="contestsPage" hidden>
+      <div class="contests-controls">
+        <input type="text" id="contestsSearch" class="contests-search" placeholder="Search by contest ID or problem name...">
+      </div>
+      <div id="contestsContent">
+        <!-- dynamically populated -->
+      </div>
+    </div><!-- /contestsPage -->
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>Data from <a href="https://codeforces.com/api/problemset.problems" target="_blank" rel="noopener noreferrer">Codeforces API</a></p>
+    </footer>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
